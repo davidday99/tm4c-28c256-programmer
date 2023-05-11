@@ -1,9 +1,10 @@
 PROJECT = main
 DEV = /dev/ttyACM0
 FLASHER = lm4flash
-SRCS = $(wildcard src/*.c)
+SRCS = $(wildcard src/*.c) \
+		   $(wildcard src/*.s)
 OBJ = obj/
-OBJS = $(addprefix $(OBJ), $(notdir $(SRCS:.c=.o)))
+OBJS = $(addprefix $(OBJ), $(filter-out %.c, $(notdir $(SRCS:.s=.o))) $(filter-out %.s, $(notdir $(SRCS:.c=.o))))
 INC = -I. -Iinc/
 LD_SCRIPT = TM4C123GH6PM.ld
 
@@ -24,6 +25,10 @@ $(OBJ)%.o: src/%.c
 	$(MKDIR)              
 	$(CC) -o $@ $< -c $(INC) $(CFLAGS) $(DEPFLAGS)
 	
+$(OBJ)%.o: src/%.s          
+	$(MKDIR)              
+	$(CC) -o $@ $< -c $(INC) $(CFLAGS) $(DEPFLAGS)
+
 bin/$(PROJECT).elf: $(OBJS) 
 	$(MKDIR)           
 	$(CC) -o $@ $^ $(CFLAGS) $(DEPFLAGS) -Wl,-T$(LD_SCRIPT) -Wl,-eResetISR -Llib -Wl,-l:libdriver.a
