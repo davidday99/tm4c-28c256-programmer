@@ -1,9 +1,11 @@
 #include <stdbool.h>
 
 #include "X28C256.h"
-#include "inc/sysctl.h"
-#include "inc/gpio.h"
-#include "inc/hw_memmap.h"
+#include "sysctl.h"
+#include "gpio.h"
+#include "hw_memmap.h"
+
+#define X28C256_SIZE 0x8000
 
 static void enable_io_as_input(DeviceX28C256_t *device);
 static void enable_io_as_output(DeviceX28C256_t *device);
@@ -13,7 +15,7 @@ static void set_address(DeviceX28C256_t *device, uint16_t address);
 static void write_byte(DeviceX28C256_t *device, uint16_t address, uint8_t value);
 static void wait_on_data_polling_bit(DeviceX28C256_t *device, uint16_t address, uint8_t value);
 
-void init_X28C256(DeviceX28C256_t *device) {
+int init_X28C256(DeviceX28C256_t *device) {
     for (uint32_t *port = device->ports; *port != 0; port++) {
         SysCtlPeripheralEnable(*port);
         while (!SysCtlPeripheralReady(*port))
@@ -31,9 +33,11 @@ void init_X28C256(DeviceX28C256_t *device) {
     for (int i = 0; i < ADDRESS_WIDTH; i++ ) {
         GPIOPinTypeGPIOOutput(device->A[i].port, device->A[i].pin);
     }    
+
+    return 1;
 }
 
-void read_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t *buf, int count) {
+int read_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t *buf, int count) {
     enable_io_as_input(device);
 
     GPIOPinWrite(device->CEn.port, device->CEn.pin, 0);
@@ -55,9 +59,11 @@ void read_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t *buf, int c
 
     GPIOPinWrite(device->CEn.port, device->CEn.pin, device->CEn.pin);
     GPIOPinWrite(device->OEn.port, device->OEn.pin, device->OEn.pin);
+
+    return 1;
 }
 
-void write_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t *buf, int count) {
+int write_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t *buf, int count) {
     int write_count;
 
     GPIOPinWrite(device->OEn.port, device->OEn.pin, device->OEn.pin);  // ensure OEn is high
@@ -76,11 +82,13 @@ void write_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t *buf, int 
         SysCtlDelay(50000);  // wait for programming cycle to begin
         wait_on_data_polling_bit(device, address + i - 1, buf[i - 1]);
     }
+
+    return 1;
 }
 
 
 
-void fill_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t value, int count) {
+int fill_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t value, int count) {
     int write_count;
 
     GPIOPinWrite(device->OEn.port, device->OEn.pin, device->OEn.pin);  // ensure OEn is high
@@ -99,6 +107,12 @@ void fill_X28C256(DeviceX28C256_t *device, uint16_t address, uint8_t value, int 
         SysCtlDelay(50000);  // wait for programming cycle to begin
         wait_on_data_polling_bit(device, address + i - 1, value);
     }
+
+    return 1;
+}
+
+int erase_X28C256(DeviceX28C256_t *device) {
+    return fill_X28C256(device, 0, 0xFF, X28C256_SIZE);
 }
 
 static void enable_io_as_input(DeviceX28C256_t *device) {

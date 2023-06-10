@@ -1,12 +1,14 @@
 PROJECT = main
 DEV = /dev/ttyACM0
 FLASHER = lm4flash
-SRCS = $(wildcard src/*.c) \
-		   $(wildcard src/*.s)
+SRCS = $(shell find src -mindepth 1 -name '*.c' -or -name '*.s')
 OBJ = obj/
-OBJS = $(addprefix $(OBJ), $(filter-out %.c, $(notdir $(SRCS:.s=.o))) $(filter-out %.s, $(notdir $(SRCS:.c=.o))))
-INC = -I. -Iinc/
+OBJS = $(addprefix $(OBJ), $(filter-out %.c, $(SRCS:.s=.o)) $(filter-out %.s, $(SRCS:.c=.o)))
+INC = -I. -Iinc/ -Iinc/common/ -Iinc/driverlib/ -Iinc/mems/ -Iinc/tm4c/
 LD_SCRIPT = TM4C123GH6PM.ld
+
+$(info $(SRCS))
+$(info $(OBJS))
 
 CC = arm-none-eabi-gcc
 LD = arm-none-eabi-ld 
@@ -21,11 +23,11 @@ DEPFLAGS = -MT $@ -MMD -MP
 
 all: bin/$(PROJECT).elf
 
-$(OBJ)%.o: src/%.c          
+$(OBJ)%.o: %.c          
 	$(MKDIR)              
 	$(CC) -o $@ $< -c $(INC) $(CFLAGS) $(DEPFLAGS)
 	
-$(OBJ)%.o: src/%.s          
+$(OBJ)%.o: %.s          
 	$(MKDIR)              
 	$(CC) -o $@ $< -c $(INC) $(CFLAGS) $(DEPFLAGS)
 
