@@ -4,7 +4,7 @@ FLASHER = lm4flash
 SRCS = $(shell find src -mindepth 1 -name '*.c' -or -name '*.s')
 OBJ = obj/
 OBJS = $(addprefix $(OBJ), $(filter-out %.c, $(SRCS:.s=.o)) $(filter-out %.s, $(SRCS:.c=.o)))
-INC = -I. -Iinc/ -Iinc/common/ -Iinc/driverlib/ -Iinc/mems/ -Iinc/tm4c/
+INC = -I. -Iinc/ -Iinc/common/ -Iinc/driverlib/ -Iinc/board/tm4c -Iinc/mems/ -Iinc/transport
 LD_SCRIPT = TM4C123GH6PM.ld
 
 $(info $(SRCS))
@@ -35,7 +35,6 @@ bin/$(PROJECT).elf: $(OBJS)
 	$(MKDIR)           
 	$(CC) -o $@ $^ $(CFLAGS) $(DEPFLAGS) -Wl,-T$(LD_SCRIPT) -Wl,-eResetISR -Llib -Wl,-l:libdriver.a
 	$(OBJCOPY) -O binary $@ bin/$(PROJECT).bin 
-	ctags -R src inc
 
 flash:
 	$(FLASHER) -S $(DEV) bin/$(PROJECT).bin
