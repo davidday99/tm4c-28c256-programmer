@@ -5,6 +5,10 @@ static void (*handle_request_cb)(struct rpc_Server *server) = &default_handle_re
 static void default_idle_cb(struct rpc_Server *server);
 static void (*idle_cb)(struct rpc_Server *server) = &default_idle_cb; 
 
+void rpc_ServerInit(struct rpc_Server *server) {
+    server->status = RPC_IDLE;
+}
+
 void rpc_ServerTick(struct rpc_Server *server) {
     if (server->status == RPC_REQUEST_PENDING) {
         handle_request_cb(server);

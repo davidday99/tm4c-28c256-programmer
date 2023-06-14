@@ -20,6 +20,7 @@ struct rpc_Server {
     char buf[RPC_BUFFER_SIZE];
 };
 
+void rpc_ServerInit(struct rpc_Server *server);
 void rpc_ServerTick(struct rpc_Server *com);
 void rpc_ServerIdle(struct rpc_Server *com);
 void rpc_ServerNotify(struct rpc_Server *com);
