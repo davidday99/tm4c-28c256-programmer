@@ -9,7 +9,7 @@
 #include "tm4c/UART.h"
 #include "tm4c/PLL.h"
 #include "string.h"
-#include "mems/eeprom.h"
+#include "mems/mem.h"
 
 extern void EnableInterrupts(void);
 
@@ -61,7 +61,7 @@ DeviceX28C256_t device = {
     .WEn = {GPIO_PORTC_BASE, GPIO_PIN_7},
 };
 
-eeprom_t x28c256 = {
+struct mem_Device x28c256 = {
     .read = read_X28C256,
     .write = write_X28C256,
     .erase = NULL,

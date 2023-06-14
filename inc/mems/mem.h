@@ -1,3 +1,5 @@
+#ifndef __MEM_H__ 
+#define  __MEM_H__
 #include <stddef.h>
 
 struct mem_Device {
@@ -5,3 +7,6 @@ struct mem_Device {
     int (*write)(void *, unsigned long int, char *, size_t);
     int (*erase)(void *);
 };
+
+#endif /* __MEM_H__ */
+
