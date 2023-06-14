@@ -28,9 +28,9 @@
 // U0Rx (VCP receive) connected to PA0
 // U0Tx (VCP transmit) connected to PA1
 #include <stdint.h>
-#include "tm4c123gh6pm.h"
-#include "FIFO.h"
-#include "UART.h"
+#include "tm4c/tm4c123gh6pm.h"
+#include "common/FIFO.h"
+#include "tm4c/UART.h"
 
 #define NVIC_EN0_INT5           0x00000020  // Interrupt 5 enable
 #define FIFOSIZE   16         // size of the FIFOs (must be power of 2)

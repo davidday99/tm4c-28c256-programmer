@@ -1,7 +1,7 @@
 #include <stddef.h>
 
-typedef struct eeprom {
+struct mem_Device {
     int (*read)(void *, unsigned long int, char *, size_t);
     int (*write)(void *, unsigned long int, char *, size_t);
     int (*erase)(void *);
-} eeprom_t;
+};

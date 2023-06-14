@@ -22,8 +22,8 @@
  */
  
 #include <stdint.h>
-#include "PLL.h"
-#include "tm4c123gh6pm.h"
+#include "tm4c/PLL.h"
+#include "tm4c/tm4c123gh6pm.h"
 
 // The #define statement SYSDIV2 in PLL.h
 // initializes the PLL to the desired frequency.
@@ -204,3 +204,4 @@ SYSDIV2  Divisor  Clock (MHz)
  126      127     3.150
  127      128     3.125
 */
+

@@ -4,7 +4,7 @@ FLASHER = lm4flash
 SRCS = $(shell find src -mindepth 1 -name '*.c' -or -name '*.s')
 OBJ = obj/
 OBJS = $(addprefix $(OBJ), $(filter-out %.c, $(SRCS:.s=.o)) $(filter-out %.s, $(SRCS:.c=.o)))
-INC = -I. -Iinc/ -Iinc/common/ -Iinc/driverlib/ -Iinc/board/tm4c -Iinc/mems/ -Iinc/transport
+INC = -I. -Iinc/ -Iinc/common/ -Iinc/driverlib/ -Iinc/boards/ -Iinc/mems/ -Iinc/transports/
 LD_SCRIPT = TM4C123GH6PM.ld
 
 $(info $(SRCS))
